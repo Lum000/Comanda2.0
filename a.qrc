@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>icones/icons8-erro-de-banco-de-dados-50.png</file>
+    <file>icones/logo.png</file>
+  </qresource>
+</RCC>
