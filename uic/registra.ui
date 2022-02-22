@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1174</width>
-    <height>824</height>
+    <width>1268</width>
+    <height>974</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>LOGIN</string>
+   <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -45,7 +45,8 @@
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(121, 121, 121);</string>
+       <string notr="true">background-color: rgb(121, 121, 121);
+border:1px</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -54,7 +55,7 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item alignment="Qt::AlignHCenter">
+       <item>
         <widget class="QLabel" name="label_3">
          <property name="font">
           <font>
@@ -113,7 +114,7 @@ color:rgb(255, 0, 0);
          <property name="maximumSize">
           <size>
            <width>600</width>
-           <height>600</height>
+           <height>700</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -132,8 +133,8 @@ border:2px solid rgb(255, 212, 0)</string>
           <property name="geometry">
            <rect>
             <x>210</x>
-            <y>20</y>
-            <width>201</width>
+            <y>10</y>
+            <width>181</width>
             <height>151</height>
            </rect>
           </property>
@@ -156,9 +157,9 @@ background-color: rgb(141, 141, 141);</string>
           <property name="geometry">
            <rect>
             <x>120</x>
-            <y>180</y>
+            <y>170</y>
             <width>361</width>
-            <height>281</height>
+            <height>401</height>
            </rect>
           </property>
           <property name="styleSheet">
@@ -187,7 +188,7 @@ background-color: rgb(141, 141, 141);</string>
             <number>0</number>
            </property>
            <item>
-            <widget class="QLineEdit" name="lineEdit">
+            <widget class="QLineEdit" name="user">
              <property name="minimumSize">
               <size>
                <width>100</width>
@@ -211,9 +212,6 @@ QLineEdit:hover{
 border:3px solid rgb(220, 180, 0)
 }</string>
              </property>
-             <property name="maxLength">
-              <number>30</number>
-             </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
@@ -223,7 +221,73 @@ border:3px solid rgb(220, 180, 0)
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_2">
+            <widget class="QLineEdit" name="email">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>15</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLineEdit{
+color:rgb(141, 141, 141);
+border:2px solid rgb(255, 212, 0);
+border-radius:20px
+}
+QLineEdit:hover{
+border:3px solid rgb(220, 180, 0)
+}</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="placeholderText">
+              <string>EMAIL</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="password">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>15</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLineEdit{
+color:rgb(141, 141, 141);
+border:2px solid rgb(255, 212, 0);
+border-radius:20px
+}
+QLineEdit:hover{
+border:3px solid rgb(220, 180, 0)
+}</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="placeholderText">
+              <string>PASSWORD</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="c_password">
              <property name="minimumSize">
               <size>
                <width>100</width>
@@ -248,86 +312,14 @@ border:3px solid rgb(220, 180, 0)
 }
 </string>
              </property>
-             <property name="maxLength">
-              <number>16</number>
-             </property>
              <property name="echoMode">
-              <enum>QLineEdit::Password</enum>
+              <enum>QLineEdit::Normal</enum>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
              <property name="placeholderText">
-              <string>PASSWORD</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox">
-             <property name="maximumSize">
-              <size>
-               <width>120</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QCheckBox{
-color:rgb(255, 255, 255);
-}
-
-QCheckBox:indicator{
-width:15px;
-height:15px;
-border:3px solid rgb(141, 141, 141);
-border-radius:10px
-}
-QCheckBox:indicator:checked{
-background-color: rgb(255, 255, 0);
-border:3px solid rgb(255, 212, 0)
-}</string>
-             </property>
-             <property name="text">
-              <string>SALVAR USUARIO</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_3">
-             <property name="minimumSize">
-              <size>
-               <width>110</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>140</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Segoe UI Variable Small Semibol</family>
-               <pointsize>10</pointsize>
-               <weight>50</weight>
-               <bold>false</bold>
-               <kerning>false</kerning>
-              </font>
-             </property>
-             <property name="layoutDirection">
-              <enum>Qt::LeftToRight</enum>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QPushButton{
-border:0px;
-color:rgb(85, 170, 255)
-}
-QPushButton:hover{
-font: 63 12pt &quot;Segoe UI Variable Small Semibol&quot;;
-}</string>
-             </property>
-             <property name="text">
-              <string>ESQUECI A SENHA</string>
+              <string>CONFIRM PASSWORD</string>
              </property>
             </widget>
            </item>
@@ -336,10 +328,10 @@ font: 63 12pt &quot;Segoe UI Variable Small Semibol&quot;;
          <widget class="QFrame" name="frame_5">
           <property name="geometry">
            <rect>
-            <x>120</x>
-            <y>460</y>
-            <width>361</width>
-            <height>111</height>
+            <x>210</x>
+            <y>600</y>
+            <width>181</width>
+            <height>71</height>
            </rect>
           </property>
           <property name="styleSheet">
@@ -351,7 +343,7 @@ font: 63 12pt &quot;Segoe UI Variable Small Semibol&quot;;
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
+          <layout class="QHBoxLayout" name="horizontalLayout" stretch="0">
            <property name="spacing">
             <number>60</number>
            </property>
@@ -393,35 +385,6 @@ font: 63 15pt &quot;Yu Gothic UI Semibold&quot;;
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QPushButton" name="pushButton">
-             <property name="minimumSize">
-              <size>
-               <width>100</width>
-               <height>60</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QPushButton{
-border:2px solid rgb(255, 212, 0);
-border-radius:25px;
-font: 63 12pt &quot;Yu Gothic UI Semibold&quot;;
-	background-color: rgb(141, 141, 141)
-}
-QPushButton:hover{
-border:4px solid rgb(255, 220, 0);
-font: 63 15pt &quot;Yu Gothic UI Semibold&quot;;
-
-}</string>
-             </property>
-             <property name="text">
-              <string>ENTRAR</string>
-             </property>
-             <property name="shortcut">
-              <string>Return</string>
-             </property>
-            </widget>
-           </item>
           </layout>
          </widget>
          <widget class="QFrame" name="frame_6">
@@ -445,9 +408,6 @@ font: 63 15pt &quot;Yu Gothic UI Semibold&quot;;
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
             <widget class="QLabel" name="label_2">
-             <property name="styleSheet">
-              <string notr="true">border:0px</string>
-             </property>
              <property name="text">
               <string/>
              </property>
@@ -457,6 +417,32 @@ font: 63 15pt &quot;Yu Gothic UI Semibold&quot;;
             </widget>
            </item>
           </layout>
+         </widget>
+         <widget class="QPushButton" name="olhosenha">
+          <property name="geometry">
+           <rect>
+            <x>490</x>
+            <y>400</y>
+            <width>41</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border:0px</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../icones/icons8-surprise-64.png</normaloff>../icones/icons8-surprise-64.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
          </widget>
         </widget>
        </item>
@@ -468,6 +454,7 @@ font: 63 15pt &quot;Yu Gothic UI Semibold&quot;;
  </widget>
  <resources>
   <include location="../a.qrc"/>
+  <include location="../../../../../Program Files (x86)/a.qrc"/>
  </resources>
  <connections/>
 </ui>
