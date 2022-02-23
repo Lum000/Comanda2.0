@@ -1,21 +1,27 @@
 from ast import Pass
 from asyncio.windows_events import NULL
+from http.client import OK
 from random import sample
 from telnetlib import ENCRYPT
+from tokenize import Ignore
 from PyQt5.QtGui import * 
 from msilib.schema import Error
 from cryptography.fernet import Fernet
 from PyQt5 import uic,QtWidgets
 from time import sleep
 from PyQt5.QtGui import QPixmap
+from PyQt5 import QtGui
+from PyQt5 import QtCore
 import base64
 from numpy import byte
 from conexao import conexao
 from PyQt5.QtWidgets import *
+from conexao import con
 
 app=QtWidgets.QApplication([])
 login = uic.loadUi("uic/Login.ui")
 inicio = uic.loadUi("uic/bemvindo.ui")
+addmesa = uic.loadUi("uic/addmesas.ui")
 logo = QPixmap("icones/logo.png")
 bancoerro = QPixmap("icones/banco")
 registro = uic.loadUi("uic/registra.ui")
@@ -26,14 +32,15 @@ inicio.label.setPixmap(logo)
 
 
 #globais
-
 erro = 0
 saveuserr = True
 abremesa = 0
+buttonStyle = """QPushButton{background-color: rgb(198, 198, 198);border: 2px solid rgb(248, 207, 2);border-radius:15px;color: rgb(0, 0, 0)}QPushButton:hover{border: 2px solid rgb(255, 255, 0);background-color: rgb(227, 227, 227)}QPushButton:pressed{background-color: rgb(255, 255, 255);border: 5px solid rgb(248, 207, 2);}"""
 estilovermelho = """QLineEdit{border:2px solid rgb(255,0,0);border-radius:15px}
         QLineEdit:hover{border:4px solid rgb(255,0,0);border-radius:15px}"""
 estilonormal = """QLineEdit{color:rgb(141, 141, 141);border:2px solid rgb(255, 212, 0);border-radius:20px}
 QLineEdit:hover{border:3px solid rgb(220, 180, 0)}"""
+linha = 0
 
 ### SALVA NO CAMPO O USUARIO
 def saveuser():
@@ -179,10 +186,86 @@ def olhosenha():
         registro.olhosenha.setIcon(QIcon(QPixmap('icones/aberto.png')))
 
 def abremesas():
-    None
+    global linha
+    from conexao import con
+    cur = con.cursor()
+    cur.execute("USE mesas")
+    cur.execute("SELECT * FROM mesas")
+    dado = cur.fetchall() 
+    inicio.tableWidget.setRowCount(len(dado))
+    inicio.tableWidget.setColumnCount(4)
+    inicio.tableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+    for i in range(0, len(dado)):
+        linhas = int(len(dado))
+        for j in range(0, 4):
+            inicio.tableWidget.setHorizontalHeaderLabels(["ID", "NOME", 'NUMERO', 'TOTAL COMANDA'])
+            inicio.tableWidget.setColumnWidth(0, 0)
+            inicio.tableWidget.setColumnWidth(1, 320)
+            inicio.tableWidget.setColumnWidth(2, 320)
+            inicio.tableWidget.setColumnWidth(3, 320)
+            inicio.tableWidget.setAlternatingRowColors(True)
+            inicio.tableWidget.setFont(QtGui.QFont('Bold',23))
+            inicio.tableWidget.setItem(i,j,QtWidgets.QTableWidgetItem(str(dado[i][j])))
+    linha = inicio.tableWidget.currentRow()
+
+### MESAS
+def abreaddmesas():
+    addmesa.show()
+    addmesa.frame_4.setStyleSheet("border-image: url(Backgrounds/backlogo.jpg)")
+
 
 def addmesas():
-    None
+    from conexao import con
+    cur = con.cursor()
+    cur.execute("USE mesas")
+    com = ("INSERT INTO mesas(nome,numero) VALUES (%s,%s)")
+    dados = (addmesa.nome.text(), addmesa.numero.text())
+    cur.execute(com,dados)
+    con.commit()
+    QMessageBox.about(addmesa,'confirmado','Mesa Adicionada Com Sucesso !!')
+    addmesa.close()
+    abremesas()
+
+
+def delmesa():
+    linha = inicio.tableWidget.currentRow()
+    from conexao import con
+    if linha == -1:
+        msgbox = QMessageBox()
+        msgbox.setText("MESA NÃO SELECIONADA")
+        msgbox.setWindowTitle("ERRO")
+        msgbox.setStandardButtons(QMessageBox.Ok)
+        msgbox.setStyleSheet("""color:red; font-size: 20pt; background-color:rgb(62, 62, 62)""")
+        msgbox.button(QMessageBox.Ok).setStyleSheet("""QPushButton{background-color: rgb(198, 198, 198);border: 2px solid rgb(248, 207, 2);border-radius:15px;color: rgb(0, 0, 0)}QPushButton:hover{border: 2px solid rgb(255, 255, 0);background-color: rgb(227, 227, 227)}QPushButton:pressed{background-color: rgb(255, 255, 255);border: 5px solid rgb(248, 207, 2);}""")
+        msgbox.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        msgbox.exec()
+    else:
+        cur = con.cursor()
+        cur.execute("SELECT id FROM mesas")
+        dado = cur.fetchall()
+        if str(dado) != '[]':
+            cur.execute("SELECT nome FROM mesas WHERE id={}".format(dado[linha][0]))
+            nome = cur.fetchall()
+            msgbox = QMessageBox()
+            msgbox.setText("TEM CERTEZA QUE DESEJA EXCLUIR A MESA =  {}".format(nome[0][0]))
+            msgbox.setWindowTitle("ERRO")
+            msgbox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            msgbox.setStyleSheet("""color:red; font-size: 20pt; background-color:rgb(62, 62, 62)""")
+            msgbox.button(QMessageBox.Yes).setStyleSheet(buttonStyle)
+            msgbox.button(QMessageBox.No).setStyleSheet(buttonStyle)
+            msgbox.button(QMessageBox.No).setText("NÃO")
+            msgbox.button(QMessageBox.Yes).setText("SIM")
+            msgbox.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+            returnValue = msgbox.exec()
+
+            if returnValue == QMessageBox.Yes:
+                vid = dado[linha][0]
+                cur.execute("DELETE FROM mesas WHERE id={}".format(vid))
+                con.commit()
+                abremesas()
+            else:
+                abremesas()
+
     
 abretelalogin()
 
@@ -199,10 +282,14 @@ registro.password.setEchoMode(registro.password.Password)
 registro.c_password.setEchoMode(registro.password.Password)
 registro.olhosenha.setIcon(QIcon(QPixmap('icones/fechado.png')))
 
+##ADDMESAS
+addmesa.adicionar.clicked.connect(addmesas)
+
 
 ##INICIOS
 inicio.mesas.clicked.connect(abremesas)
-inicio.adicionar.clicked.connect(addmesas)
+inicio.adicionar.clicked.connect(abreaddmesas)
+inicio.excluir.clicked.connect(delmesa)
 
 
 

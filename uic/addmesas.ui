@@ -34,14 +34,14 @@
      <widget class="QFrame" name="frame">
       <property name="minimumSize">
        <size>
-        <width>70</width>
+        <width>20</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>70</height>
+        <height>20</height>
        </size>
       </property>
       <property name="styleSheet">
@@ -57,16 +57,34 @@
     </item>
     <item>
      <widget class="QFrame" name="frame_2">
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(185, 185, 185);</string>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QFrame" name="frame_3">
          <property name="maximumSize">
@@ -74,6 +92,9 @@
            <width>600</width>
            <height>500</height>
           </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
          </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
@@ -96,7 +117,7 @@ border-top-left-radius:15px;
 border-bottom-left-radius:5</string>
           </property>
           <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
+           <enum>QFrame::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
@@ -136,52 +157,116 @@ border-bottom-left-radius:5</string>
            <property name="bottomMargin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="QLineEdit" name="lineEdit">
-             <property name="maximumSize">
+           <item alignment="Qt::AlignHCenter">
+            <widget class="QLineEdit" name="nome">
+             <property name="minimumSize">
               <size>
-               <width>16777215</width>
-               <height>30</height>
+               <width>250</width>
+               <height>40</height>
               </size>
              </property>
+             <property name="maximumSize">
+              <size>
+               <width>200</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>15</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(255, 255, 255);</string>
+              <string notr="true">QLineEdit{
+background-color: rgba(185, 185, 185,100);
+border:2px solid rgb(248, 207, 2);
+border-radius:15px;
+}
+QLineEdit:hover{
+background-color: rgb(185, 185, 185);
+border:3px solid rgb(248, 207, 2)
+}</string>
+             </property>
+             <property name="maxLength">
+              <number>16</number>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="placeholderText">
+              <string>NOME</string>
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit_2">
+           <item alignment="Qt::AlignHCenter">
+            <widget class="QLineEdit" name="numero">
+             <property name="minimumSize">
+              <size>
+               <width>250</width>
+               <height>40</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
                <width>16777215</width>
-               <height>30</height>
+               <height>40</height>
               </size>
              </property>
+             <property name="font">
+              <font>
+               <pointsize>15</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(255, 255, 255);</string>
+              <string notr="true">QLineEdit{
+background-color: rgba(185, 185, 185,100);
+border:2px solid rgb(248, 207, 2);
+border-radius:15px;
+}
+QLineEdit:hover{
+background-color: rgb(185, 185, 185);
+border:3px solid rgb(248, 207, 2)
+}</string>
+             </property>
+             <property name="maxLength">
+              <number>16</number>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="placeholderText">
+              <string>NUMERO</string>
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit_3">
+           <item alignment="Qt::AlignHCenter">
+            <widget class="QPushButton" name="adicionar">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>50</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
-               <width>16777215</width>
+               <width>200</width>
                <height>30</height>
               </size>
              </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(255, 255, 255);</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>30</height>
-              </size>
+             <property name="font">
+              <font>
+               <pointsize>15</pointsize>
+               <weight>75</weight>
+               <italic>false</italic>
+               <bold>true</bold>
+               <underline>false</underline>
+               <strikeout>false</strikeout>
+               <stylestrategy>PreferDefault</stylestrategy>
+              </font>
              </property>
              <property name="styleSheet">
               <string notr="true">QPushButton{
@@ -202,7 +287,10 @@ border: 5px solid rgb(248, 207, 2);
 }</string>
              </property>
              <property name="text">
-              <string>PushButton</string>
+              <string>ADICIONAR</string>
+             </property>
+             <property name="shortcut">
+              <string>Return</string>
              </property>
             </widget>
            </item>
