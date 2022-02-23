@@ -289,6 +289,9 @@ border:3px solid rgb(255, 212, 0)
              <property name="text">
               <string>SALVAR USUARIO</string>
              </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item>
