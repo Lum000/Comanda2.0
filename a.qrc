@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>Backgrounds/Back.jpg</file>
+    <file>Backgrounds/975 por 70.jpg</file>
     <file>icones/logo.png</file>
     <file>Backgrounds/backlogo.jpg</file>
   </qresource>

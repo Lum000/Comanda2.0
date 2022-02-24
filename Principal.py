@@ -3,7 +3,9 @@ from asyncio.windows_events import NULL
 from http.client import OK
 from random import sample
 from telnetlib import ENCRYPT
+from tkinter import messagebox
 from tokenize import Ignore
+from turtle import onclick
 from PyQt5.QtGui import * 
 from msilib.schema import Error
 from cryptography.fernet import Fernet
@@ -25,23 +27,29 @@ addmesa = uic.loadUi("uic/addmesas.ui")
 logo = QPixmap("icones/logo.png")
 bancoerro = QPixmap("icones/banco")
 registro = uic.loadUi("uic/registra.ui")
+comanda = uic.loadUi("uic/comandas.ui")
 login.label.setPixmap(logo)
 registro.label.setPixmap(logo)
 inicio.label.setPixmap(logo)
 
 
-
+#--------------------------------------------------------------------------
 #globais
 erro = 0
 saveuserr = True
 abremesa = 0
+nome_nome = 0
 buttonStyle = """QPushButton{background-color: rgb(198, 198, 198);border: 2px solid rgb(248, 207, 2);border-radius:15px;color: rgb(0, 0, 0)}QPushButton:hover{border: 2px solid rgb(255, 255, 0);background-color: rgb(227, 227, 227)}QPushButton:pressed{background-color: rgb(255, 255, 255);border: 5px solid rgb(248, 207, 2);}"""
 estilovermelho = """QLineEdit{border:2px solid rgb(255,0,0);border-radius:15px}
         QLineEdit:hover{border:4px solid rgb(255,0,0);border-radius:15px}"""
 estilonormal = """QLineEdit{color:rgb(141, 141, 141);border:2px solid rgb(255, 212, 0);border-radius:20px}
 QLineEdit:hover{border:3px solid rgb(220, 180, 0)}"""
+styletable = """QTableWidget{gridline-color: rgb(0, 0, 0);;font-size: 22pt;border:2px;border-image: url(Backgrounds/Back.jpg);}QHeaderView::section {background-color: rgb(62, 62, 62);padding: 4px;border:2px solid rgb(248, 207, 2);color:rgb(255, 255, 255);font: 75 12pt "MS Shell Dlg 2";}QHeaderView::section:horizontal{border-top: 2px solid rgb(248, 207, 2);font-size: 22pt;}QHeaderView::section:vertical{border-left: 2px solid rgb(248, 207, 2);	border-bottom:0px;font-size: 20pt}"""
+styleButton = """QPushButton{background-color: rgba(170, 255, 255, 100);font: 12pt Arial,bold;border:2px solid black;border-radius:15px}QPushButton:hover{background-color: rgba(170, 255, 255, 200);border:3px solid black}"""
 linha = 0
 
+
+#--------------------------------------------------------------------------
 ### SALVA NO CAMPO O USUARIO
 def saveuser():
     global saveuserr
@@ -51,12 +59,15 @@ def saveuser():
         saveuserr = True
     else:
         saveuserr = False
+
+
+
+#--------------------------------------------------------------------------
 ### STARTA O PROGRAMA
 def abretelalogin():
     global erro
     global saveuserr
     login.show()
-    print(saveuserr)
     try:
         from conexao import conexao
         conexao()
@@ -72,7 +83,7 @@ def abretelalogin():
     else:
         login.lineEdit.setText(str(dado[0][0]))
     
-
+#--------------------------------------------------------------------------
 ##registro
 def abreregistro():
     login.close()
@@ -133,6 +144,9 @@ def registra():
         registro.label_3.setStyleSheet('color:rgb(255,0,0)')
 
     ## REGISTRO ALTERAÇOES VISUAIS
+
+
+#--------------------------------------------------------------------------
 #VALIDA O LOGIN
 def validalogin():
     global erro
@@ -148,11 +162,14 @@ def validalogin():
         if str(user) == '[]':
             login.label_3.setText('  USUARIO NÃO EXISTE  ')
             login.label_3.setStyleSheet('QLabel{color:rgb(255,0,0);border:2px solid rgb(255,0,0); border-radius:10px}')
+        elif str(user) != '[]' and str(login.lineEdit_2.text()) == '[]':
+            login.label_3.setText("VERIFIQUE SEUS DADOS")
         else:
             cur.execute("SELECT nome FROM saveuser WHERE nome ='{}'".format(username))
             dado = cur.fetchall()
             if str(dado) == '[]' and saveuserr == True:
                 cur.execute("INSERT INTO saveuser (nome) VALUES ('{}')".format(username))
+
                 con.commit()
             elif str(dado) != '[]' and saveuserr == True:
                 pass
@@ -184,47 +201,111 @@ def olhosenha():
         registro.password.setEchoMode(registro.password.Normal)
         registro.c_password.setEchoMode(registro.password.Normal)
         registro.olhosenha.setIcon(QIcon(QPixmap('icones/aberto.png')))
+#--------------------------------------------------------------------------
+#ABRE AS COMANDAS
+
+def abrecomanda(nomee):
+    global nome_nome
+    nome_nome = nomee
+    comanda.show()
+    comanda.mesa.setText(nomee)
+    comanda.frame.setStyleSheet('QFrame{border-image: url("Backgrounds/975.jpg")}')
+
+
+
+
+
+
+
+
+
+
+
+
+#--------------------------------------------------------------------------
+#ABRE AS MESAS
+
 
 def abremesas():
     global linha
+    global nome_nome
     from conexao import con
     cur = con.cursor()
     cur.execute("USE mesas")
     cur.execute("SELECT * FROM mesas")
     dado = cur.fetchall() 
-    inicio.tableWidget.setRowCount(len(dado))
-    inicio.tableWidget.setColumnCount(4)
-    inicio.tableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+    btnn = -1 
+    distancia = 100
+    size = 150
+    linha = 0
+    nome_n = -1
+    numero = -1
+    cur.execute("SELECT nome FROM mesas")
+    nome = cur.fetchall()
     for i in range(0, len(dado)):
-        linhas = int(len(dado))
-        for j in range(0, 4):
-            inicio.tableWidget.setHorizontalHeaderLabels(["ID", "NOME", 'NUMERO', 'TOTAL COMANDA'])
-            inicio.tableWidget.setColumnWidth(0, 0)
-            inicio.tableWidget.setColumnWidth(1, 320)
-            inicio.tableWidget.setColumnWidth(2, 320)
-            inicio.tableWidget.setColumnWidth(3, 320)
-            inicio.tableWidget.setAlternatingRowColors(True)
-            inicio.tableWidget.setFont(QtGui.QFont('Bold',23))
-            inicio.tableWidget.setItem(i,j,QtWidgets.QTableWidgetItem(str(dado[i][j])))
-    linha = inicio.tableWidget.currentRow()
+        nome_n += 1
+        numero += 1
+        if str(nome) != '[]':
+            nomee = nome[nome_n][0]
+            size -= 5
+            btnn += 1
+            button = QPushButton('Button {}'.format(nomee), inicio.frame_2)
+            button.setMaximumSize(size,70)
+            button.setBaseSize(200, 70)
+            button.setMinimumSize(110,70)
+            button.move(100, 70)
+            button.setStyleSheet(styleButton)
+            linha += 1
+            button.setText("{}".format(nomee.upper()))
+            button.show()
+            button.clicked.connect(lambda ch, nomee=nomee: abrecomanda(nomee))
+            if numero < 4:
+                for x in range(numero, linha):
+                    button.move(distancia, 70)
+                    distancia = distancia + 170
+            elif numero == 4:
+                distanciab = 100
+                button.move(distanciab,150)
+            elif numero > 4:
+                for y in range(numero, linha):
+                    distanciab += 170
+                    button.move(distanciab,150)
+        else:
+            QMessageBox.about(inicio,'ERRO','SEM MESAS DISPONIVEIS')
 
+
+#--------------------------------------------------------------------------
 ### MESAS
 def abreaddmesas():
     addmesa.show()
+    addmesa.nome.setText()
+    addmesa.numero.setText()
     addmesa.frame_4.setStyleSheet("border-image: url(Backgrounds/backlogo.jpg)")
 
 
 def addmesas():
     from conexao import con
+    import mysql.connector
+    global nome_nome
+    nomee = addmesa.nome.text()
     cur = con.cursor()
-    cur.execute("USE mesas")
-    com = ("INSERT INTO mesas(nome,numero) VALUES (%s,%s)")
-    dados = (addmesa.nome.text(), addmesa.numero.text())
-    cur.execute(com,dados)
-    con.commit()
-    QMessageBox.about(addmesa,'confirmado','Mesa Adicionada Com Sucesso !!')
-    addmesa.close()
-    abremesas()
+    try:
+        cur.execute("USE mesas")
+        com = ("INSERT INTO mesas(nome,numero) VALUES (%s,%s)")
+        dados = (nomee,addmesa.numero.text())
+        cur.execute(com,dados)
+        con.commit()
+        cur.execute("CREATE DATABASE IF NOT EXISTS {}".format(nomee))
+        con.commit()
+        cur.execute("USE {}".format(nomee))
+        cur.execute("CREATE TABLE IF NOT EXISTS produtos ( id INT NOT NULL AUTO_INCREMENT , produto VARCHAR(50) NOT NULL ,quantidade INT, preco DOUBLE NOT NULL, TOTAL INT , PRIMARY KEY (id)) ENGINE = InnoDB")
+        con.commit()
+        QMessageBox.about(addmesa,'confirmado','Mesa Adicionada Com Sucesso !!')
+        addmesa.close()
+        abremesas()
+    except mysql.connector.Error as err:
+        QMessageBox.about(addmesa,'ERRO','ERRO AO ADICIONAR A MESA {} !!!!'.format(err))
+    
 
 
 def delmesa():
@@ -266,31 +347,35 @@ def delmesa():
             else:
                 abremesas()
 
+
     
 abretelalogin()
 
+def abreavulsos():
+    None
 
+#--------------------------------------------------------------------------
 #LOGIN
 login.pushButton.clicked.connect(validalogin)
 login.pushButton_2.clicked.connect(abreregistro)
 login.checkBox.stateChanged.connect(saveuser)
-
+#--------------------------------------------------------------------------
 #REGISTROS
 registro.pushButton_2.clicked.connect(registra)
 registro.olhosenha.clicked.connect(olhosenha)
 registro.password.setEchoMode(registro.password.Password)
 registro.c_password.setEchoMode(registro.password.Password)
 registro.olhosenha.setIcon(QIcon(QPixmap('icones/fechado.png')))
-
+#--------------------------------------------------------------------------
 ##ADDMESAS
 addmesa.adicionar.clicked.connect(addmesas)
 
-
+#--------------------------------------------------------------------------
 ##INICIOS
 inicio.mesas.clicked.connect(abremesas)
 inicio.adicionar.clicked.connect(abreaddmesas)
 inicio.excluir.clicked.connect(delmesa)
-
+inicio.avulsos.clicked.connect(abreavulsos)
 
 
 
