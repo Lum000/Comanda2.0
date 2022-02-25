@@ -1,14 +1,9 @@
-from ast import Pass
 from asyncio.windows_events import NULL
 from http.client import OK
-from random import sample
 from telnetlib import ENCRYPT
-from tkinter import messagebox
-from tokenize import Ignore
-from turtle import onclick
+from turtle import color
 from PyQt5.QtGui import * 
 from msilib.schema import Error
-from cryptography.fernet import Fernet
 from PyQt5 import uic,QtWidgets
 from time import sleep
 from PyQt5.QtGui import QPixmap
@@ -18,7 +13,6 @@ import base64
 from numpy import byte
 from conexao import conexao
 from PyQt5.QtWidgets import *
-from conexao import con
 
 app=QtWidgets.QApplication([])
 login = uic.loadUi("uic/Login.ui")
@@ -70,6 +64,14 @@ def abretelalogin():
     global erro
     global saveuserr
     login.show()
+    login.setStyleSheet("""#MainWindow {
+        background-image: url(Backgrounds/lanchonete.jpg);
+        background-repeat: no-repeat;
+        background-position: center;}""")
+    registro.setStyleSheet("""#MainWindow {
+        background-image: url(Backgrounds/lanchonete.jpg);
+        background-repeat: no-repeat;
+        background-position: center;}""")
     try:
         from conexao import conexao
         conexao()
@@ -190,6 +192,7 @@ def validalogin():
             if sample_string == password:
                 login.close()
                 inicio.show()
+                inicio.frame_2.setStyleSheet('QFrame{background-image: url(Backgrounds/Back.jpg);background-repeat:no-repeat;background-position: center;}')
             else:
                 login.label_3.setText("VERIFIQUE OS DADOS")
 #ALTERA VISIBILIDADE DA SENHA
@@ -310,20 +313,6 @@ def addestoque():
             adestoque.erro.setText("PREÇO NÃO É NUMERO !!")
 
 
-
-
-
-
-
-
-
-
-
-
-#--------------------------------------------------------------------------
-#ABRE AS MESAS
-
-
 def abremesas():
     global linha
     global nome_nome
@@ -344,6 +333,7 @@ def abremesas():
         nome_n += 1
         numero += 1
         if str(nome) != '[]':
+            inicio.frame_2.setStyleSheet('QFrame{background-color: rgb(185, 185, 185);}')
             nomee = nome[nome_n][0]
             size -= 5
             btnn += 1
@@ -368,8 +358,9 @@ def abremesas():
                 for y in range(numero, linha):
                     distanciab += 170
                     button.move(distanciab,150)
-        else:
+        elif nome == '[]':
             QMessageBox.about(inicio,'ERRO','SEM MESAS DISPONIVEIS')
+        
 
 
 #--------------------------------------------------------------------------
@@ -407,43 +398,34 @@ def addmesas():
 
 
 def delmesa():
-    linha = inicio.tableWidget.currentRow()
     from conexao import con
-    if linha == -1:
-        msgbox = QMessageBox()
-        msgbox.setText("MESA NÃO SELECIONADA")
-        msgbox.setWindowTitle("ERRO")
-        msgbox.setStandardButtons(QMessageBox.Ok)
-        msgbox.setStyleSheet("""color:red; font-size: 20pt; background-color:rgb(62, 62, 62)""")
-        msgbox.button(QMessageBox.Ok).setStyleSheet("""QPushButton{background-color: rgb(198, 198, 198);border: 2px solid rgb(248, 207, 2);border-radius:15px;color: rgb(0, 0, 0)}QPushButton:hover{border: 2px solid rgb(255, 255, 0);background-color: rgb(227, 227, 227)}QPushButton:pressed{background-color: rgb(255, 255, 255);border: 5px solid rgb(248, 207, 2);}""")
-        msgbox.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        msgbox.exec()
-    else:
-        cur = con.cursor()
-        cur.execute("SELECT id FROM mesas")
-        dado = cur.fetchall()
-        if str(dado) != '[]':
-            cur.execute("SELECT nome FROM mesas WHERE id={}".format(dado[linha][0]))
-            nome = cur.fetchall()
-            msgbox = QMessageBox()
-            msgbox.setText("TEM CERTEZA QUE DESEJA EXCLUIR A MESA =  {}".format(nome[0][0]))
-            msgbox.setWindowTitle("ERRO")
-            msgbox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            msgbox.setStyleSheet("""color:red; font-size: 20pt; background-color:rgb(62, 62, 62)""")
-            msgbox.button(QMessageBox.Yes).setStyleSheet(buttonStyle)
-            msgbox.button(QMessageBox.No).setStyleSheet(buttonStyle)
-            msgbox.button(QMessageBox.No).setText("NÃO")
-            msgbox.button(QMessageBox.Yes).setText("SIM")
-            msgbox.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-            returnValue = msgbox.exec()
+    nome = comanda.mesa.text()
+    msgbox = QMessageBox()
+    msgbox.setText("          TEM CERTEZA QUE DESEJA EXCLUIR A MESA \n                                  {}".format(nome))
+    msgbox.setWindowTitle("ERRO")
+    msgbox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+    msgbox.setStyleSheet("""QLabel{min-width:600 px; font-size: 24px;} QPushButton{ width:250px; font-size: 18px; }QMessageBox{background-image: url(Backgrounds/lanchonete.jpg);
+        background-repeat: no-repeat;
+        background-position: center;}""")
+    msgbox.button(QMessageBox.Yes).setStyleSheet(buttonStyle)
+    msgbox.button(QMessageBox.No).setStyleSheet(buttonStyle)
+    msgbox.button(QMessageBox.No).setText("NÃO")
+    msgbox.button(QMessageBox.Yes).setText("SIM")
+    returnValue = msgbox.exec()
 
-            if returnValue == QMessageBox.Yes:
-                vid = dado[linha][0]
-                cur.execute("DELETE FROM mesas WHERE id={}".format(vid))
-                con.commit()
-                abremesas()
-            else:
-                abremesas()
+    if returnValue == QMessageBox.Yes:
+        cur = con.cursor()
+        cur.execute("USE mesas")
+        cur.execute("SELECT id FROM mesas WHERE nome = '{}'".format(nome))
+        vid = cur.fetchall()
+        cur.execute("DELETE FROM `mesas` WHERE `mesas`.`id` = {}".format(vid[0][0]))
+        con.commit()
+        cur.execute("DROP DATABASE {}".format(nome.lower()))
+        abremesas()
+        comanda.close()
+    else:
+        abremesas()
+
 
 
     
@@ -478,12 +460,12 @@ adestoque.adicionar.clicked.connect(addestoque)
 
 comanda.adicionar.clicked.connect(abreaddproduto)
 adproduto.adicionar.clicked.connect(addproduto)
+comanda.apagar.clicked.connect(delmesa)
 
 #--------------------------------------------------------------------------
 ##INICIOS
 inicio.mesas.clicked.connect(abremesas)
 inicio.adicionar.clicked.connect(abreaddmesas)
-inicio.excluir.clicked.connect(delmesa)
 inicio.avulsos.clicked.connect(abreavulsos)
 inicio.adicionar_2.clicked.connect(abreaddestoque)
 
