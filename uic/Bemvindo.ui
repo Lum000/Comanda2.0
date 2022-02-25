@@ -476,6 +476,44 @@ border: 5px solid rgb(248, 207, 2);
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="adicionar_2">
+         <property name="minimumSize">
+          <size>
+           <width>70</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton{
+background-color: rgb(198, 198, 198);
+border: 2px solid rgb(248, 207, 2);
+border-radius:15px;
+color: rgb(0, 0, 0)
+}
+
+QPushButton:hover{
+border: 2px solid rgb(255, 255, 0);
+background-color: rgb(227, 227, 227)
+}
+
+QPushButton:pressed{
+background-color: rgb(255, 255, 255);
+border: 5px solid rgb(248, 207, 2);
+}</string>
+         </property>
+         <property name="text">
+          <string>ADICIONA PRODUTO</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="fechadia">
          <property name="minimumSize">
           <size>

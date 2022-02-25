@@ -31,6 +31,8 @@ comanda = uic.loadUi("uic/comandas.ui")
 login.label.setPixmap(logo)
 registro.label.setPixmap(logo)
 inicio.label.setPixmap(logo)
+adproduto = uic.loadUi("uic/addproduto.ui")
+adestoque = uic.loadUi("uic/estoquead.ui" )
 
 
 #--------------------------------------------------------------------------
@@ -207,9 +209,105 @@ def olhosenha():
 def abrecomanda(nomee):
     global nome_nome
     nome_nome = nomee
+    from conexao import con
+    comanda.lineEdit.setText('')
     comanda.show()
+    comanda.tableWidget.setColumnWidth(0, 0)
+    comanda.tableWidget.setColumnWidth(1, 325)
+    comanda.tableWidget.setColumnWidth(2, 325)
+    comanda.tableWidget.setColumnWidth(3, 300)
+    comanda.adicionar.setIcon(QtGui.QIcon('icones/adicionar.png'))
+    comanda.adicionar.setStyleSheet("""QPushButton{border:2px solid rgb(197, 174, 60);}QPushButton:hover{border:3px solid rgba(85, 255,20, 255);background-color: rgba(85, 255, 0, 100);}""")
+    cur = con.cursor()
+    cur.execute("USE {}".format(nomee))
+    cur.execute("SELECT * FROM produtos")
+    comanda.tableWidget.setColumnCount(4)
+    resul = cur.fetchall()
+    comanda.tableWidget.setRowCount(len(resul))
+    for i in range(0,len(resul)):
+        for j in range(0, 4):
+            comanda.tableWidget.setItem(i,j,QtWidgets.QTableWidgetItem(str(resul[i][j])))
     comanda.mesa.setText(nomee)
+    comanda.mesa.setStyleSheet("QLabel{color: rgb(0, 4, 255) }")
     comanda.frame.setStyleSheet('QFrame{border-image: url("Backgrounds/975.jpg")}')
+
+
+#--------------------------------------------------------------------------
+#ADICIONA NAS COMANDAS
+
+def addprodutoa(ola):
+    print(ola)
+
+def abreaddproduto():
+    from conexao import con
+    cur = con.cursor()
+    cur.execute("USE lanchonete")
+    cur.execute("SELECT * FROM produtos")
+    dado = cur.fetchall()
+    adproduto.show()
+    adproduto.frame.setStyleSheet("QFrame{border-image: url(Backgrounds/975.jpg)}")
+    adproduto.tableWidget.setRowCount(len(dado))
+    adproduto.tableWidget.setColumnCount(3)
+    adproduto.tableWidget.setColumnWidth(0,0)
+    adproduto.tableWidget.setColumnWidth(1,392)
+    adproduto.tableWidget.setColumnWidth(2,392)
+    for i in range(0, len(dado)):
+        for j in range(0,3):
+            adproduto.tableWidget.setItem(i,j,QtWidgets.QTableWidgetItem(str(dado[i][j])))
+    adproduto.tableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+
+def addproduto():
+    from conexao import con
+    linha = adproduto.tableWidget.currentRow()
+    cur = con.cursor()
+    cur.execute("SELECT id FROM produtos")
+    resultdado = cur.fetchall()
+    cur.execute("SELECT * FROM produtos WHERE id={}".format(resultdado[linha][0]))
+    resultado = cur.fetchall()
+
+    
+
+
+
+#--------------------------------------------------------------------------
+#ADICIONA NO ESTOQUE
+
+def abreaddestoque():
+    adestoque.show()
+    adestoque.setStyleSheet("""#MainWindow {
+        background-image: url(Backgrounds/lanchonete.jpg);
+        background-repeat: no-repeat;
+        background-position: center;
+    }""")
+    adestoque.frame_4.setStyleSheet("""QFrame{border-image: url(Backgrounds/backlogo.jpg)}""")
+
+
+def addestoque():
+    from conexao import con
+    cur = con.cursor()
+    cur.execute("USE lanchonete")
+    cur.execute("CREATE TABLE IF NOT EXISTS produtos(id INT PRIMARY KEY AUTO_INCREMENT,produto VARCHAR(32),preco DOUBLE)")
+    con.commit()
+    produto = adestoque.produto.text()
+    preco = adestoque.preco.text()
+    if produto == '' and preco == '':
+        adestoque.erro.setText("COMPLETE OS CAMPOS !!!")
+    elif produto == "":
+        adestoque.erro.setText("DIGITE O PRODUTO !!")
+    else:
+        try:
+            if preco == '':
+                adestoque.erro.setText("DIGITE O PREÇO !!!")
+            else:
+                preco_ve = int(preco)
+                com = "INSERT INTO produtos (produto,preco) VALUES (%s,%s)"
+                vari = (produto,preco)
+                cur.execute(com,vari)
+                con.commit()
+                QMessageBox.about(adproduto,'EXITO !',"PRODUTO ADICIONADO COM SUCESSO !!!")
+                adestoque.close()
+        except:
+            adestoque.erro.setText("PREÇO NÃO É NUMERO !!")
 
 
 
@@ -278,8 +376,8 @@ def abremesas():
 ### MESAS
 def abreaddmesas():
     addmesa.show()
-    addmesa.nome.setText()
-    addmesa.numero.setText()
+    addmesa.nome.setText('')
+    addmesa.numero.setText('')
     addmesa.frame_4.setStyleSheet("border-image: url(Backgrounds/backlogo.jpg)")
 
 
@@ -371,11 +469,23 @@ registro.olhosenha.setIcon(QIcon(QPixmap('icones/fechado.png')))
 addmesa.adicionar.clicked.connect(addmesas)
 
 #--------------------------------------------------------------------------
+#ESTOQUE
+
+adestoque.adicionar.clicked.connect(addestoque)
+
+#--------------------------------------------------------------------------
+###COMANDAS
+
+comanda.adicionar.clicked.connect(abreaddproduto)
+adproduto.adicionar.clicked.connect(addproduto)
+
+#--------------------------------------------------------------------------
 ##INICIOS
 inicio.mesas.clicked.connect(abremesas)
 inicio.adicionar.clicked.connect(abreaddmesas)
 inicio.excluir.clicked.connect(delmesa)
 inicio.avulsos.clicked.connect(abreavulsos)
+inicio.adicionar_2.clicked.connect(abreaddestoque)
 
 
 
