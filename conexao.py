@@ -1,7 +1,6 @@
 from ast import expr_context
 from msilib.schema import Error
 import mysql.connector
-import Principal
 con = 0
 def conexao():
     global con

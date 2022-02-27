@@ -1,9 +1,10 @@
 from asyncio.windows_events import NULL
 from http.client import OK
+from math import prod
 from telnetlib import ENCRYPT
 from turtle import color
 from PyQt5.QtGui import * 
-from msilib.schema import Error
+from msilib.schema import AdminExecuteSequence, Error
 from PyQt5 import uic,QtWidgets
 from time import sleep
 from PyQt5.QtGui import QPixmap
@@ -34,6 +35,8 @@ adestoque = uic.loadUi("uic/estoquead.ui" )
 erro = 0
 saveuserr = True
 abremesa = 0
+produto = 0
+preco = 0.0
 nome_nome = 0
 buttonStyle = """QPushButton{background-color: rgb(198, 198, 198);border: 2px solid rgb(248, 207, 2);border-radius:15px;color: rgb(0, 0, 0)}QPushButton:hover{border: 2px solid rgb(255, 255, 0);background-color: rgb(227, 227, 227)}QPushButton:pressed{background-color: rgb(255, 255, 255);border: 5px solid rgb(248, 207, 2);}"""
 estilovermelho = """QLineEdit{border:2px solid rgb(255,0,0);border-radius:15px}
@@ -216,8 +219,8 @@ def abrecomanda(nomee):
     comanda.lineEdit.setText('')
     comanda.show()
     comanda.tableWidget.setColumnWidth(0, 0)
-    comanda.tableWidget.setColumnWidth(1, 325)
-    comanda.tableWidget.setColumnWidth(2, 325)
+    comanda.tableWidget.setColumnWidth(1, 320)
+    comanda.tableWidget.setColumnWidth(2, 320)
     comanda.tableWidget.setColumnWidth(3, 300)
     comanda.adicionar.setIcon(QtGui.QIcon('icones/adicionar.png'))
     comanda.adicionar.setStyleSheet("""QPushButton{border:2px solid rgb(197, 174, 60);}QPushButton:hover{border:3px solid rgba(85, 255,20, 255);background-color: rgba(85, 255, 0, 100);}""")
@@ -233,13 +236,25 @@ def abrecomanda(nomee):
     comanda.mesa.setText(nomee)
     comanda.mesa.setStyleSheet("QLabel{color: rgb(0, 4, 255) }")
     comanda.frame.setStyleSheet('QFrame{border-image: url("Backgrounds/975.jpg")}')
+    somacomandas()
+
+def somacomandas():
+    from conexao import con
+    cur = con.cursor()
+    global nome_nome
+    cur.execute("USE {}".format(nome_nome))
+    cur.execute("SELECT SUM(preco) FROM produtos")
+    a = cur.fetchall()
+    comanda.total.setText("R${}".format(a[0][0]))
+    if str(a[0][0]) == 'None':
+        comanda.total.setText("R$0")
+    else:
+        None
+    
 
 
 #--------------------------------------------------------------------------
 #ADICIONA NAS COMANDAS
-
-def addprodutoa(ola):
-    print(ola)
 
 def abreaddproduto():
     from conexao import con
@@ -259,14 +274,69 @@ def abreaddproduto():
             adproduto.tableWidget.setItem(i,j,QtWidgets.QTableWidgetItem(str(dado[i][j])))
     adproduto.tableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
 
-def addproduto():
+def addproduto(selected):
+    global produto
+    global preco
+    for ix in selected.indexes():
+        linha = ix.row()
     from conexao import con
-    linha = adproduto.tableWidget.currentRow()
     cur = con.cursor()
     cur.execute("SELECT id FROM produtos")
-    resultdado = cur.fetchall()
-    cur.execute("SELECT * FROM produtos WHERE id={}".format(resultdado[linha][0]))
-    resultado = cur.fetchall()
+    dado = cur.fetchall()
+    dado_meio = dado[linha][0]
+    cur.execute("SELECT * FROM produtos WHERE id='{}'".format(dado_meio))
+    dado_final = cur.fetchall()
+    produto = dado_final[0][1]
+    preco = dado_final[0][2]
+    adproduto.produto.setText(produto)
+    adproduto.valor.setText(str(preco))
+
+
+def addprodutoa():
+    global produto
+    global preco
+    from conexao import con
+    global nome_nome
+    quantidade = adproduto.quantidade.text()
+    quantidade_int = quantidade.isdigit()
+    if quantidade_int == False:
+        QMessageBox.about(adproduto,'ERRO','QUANTIDADE NÃO É UM NUMERO !')
+    else:
+        cur = con.cursor()
+        cur.execute("USE {}".format(nome_nome))
+        preco_final = preco * float(quantidade)
+        cur.execute("SELECT * FROM produtos WHERE produto = '{}'".format(produto))
+        confirmaçao = cur.fetchall()
+        if str(confirmaçao) == '[]':
+            com = "INSERT INTO produtos (produto,preco,quantidade) VALUES (%s,%s,%s)"
+            dado = (produto,preco_final,quantidade)
+            cur.execute(com,dado)
+            con.commit()
+            QMessageBox.about(adproduto,'SUCESSO','ADICIONADO COM SUCESSO !')
+            abrecomanda(nomee=nome_nome)
+        else:
+            cur.execute("SELECT quantidade FROM produtos WHERE produto = '{}'".format(produto))
+            dado_inicio = cur.fetchall()
+            dado_meio = dado_inicio[0][0]
+            quantidade_correta = int(dado_meio) + int(quantidade) 
+            valor = quantidade_correta * preco
+            cur.execute("UPDATE produtos SET quantidade = '{}', preco = '{}' WHERE produto ='{}'".format(quantidade_correta,valor,produto))
+            con.commit()
+            QMessageBox.about(adproduto,'SUCESSO','ADICIONADO COM SUCESSO !')
+            abrecomanda(nomee=nome_nome)
+
+def apagaproduto():
+    global nome_nome
+    linha = comanda.tableWidget.currentRow()
+    from conexao import con
+    cur = con.cursor()
+    cur.execute("USE {}".format(nome_nome))
+    cur.execute("SELECT id FROM produtos")
+    dado_inicio = cur.fetchall()
+    dado_meio = dado_inicio[linha][0]
+    cur.execute("DELETE FROM produtos WHERE id = '{}'".format(dado_meio))
+    con.commit()
+    abrecomanda(nomee=nome_nome)
 
     
 
@@ -311,55 +381,6 @@ def addestoque():
                 adestoque.close()
         except:
             adestoque.erro.setText("PREÇO NÃO É NUMERO !!")
-
-
-def abremesas():
-    global linha
-    global nome_nome
-    from conexao import con
-    cur = con.cursor()
-    cur.execute("USE mesas")
-    cur.execute("SELECT * FROM mesas")
-    dado = cur.fetchall() 
-    btnn = -1 
-    distancia = 100
-    size = 150
-    linha = 0
-    nome_n = -1
-    numero = -1
-    cur.execute("SELECT nome FROM mesas")
-    nome = cur.fetchall()
-    for i in range(0, len(dado)):
-        nome_n += 1
-        numero += 1
-        if str(nome) != '[]':
-            inicio.frame_2.setStyleSheet('QFrame{background-color: rgb(185, 185, 185);}')
-            nomee = nome[nome_n][0]
-            size -= 5
-            btnn += 1
-            button = QPushButton('Button {}'.format(nomee), inicio.frame_2)
-            button.setMaximumSize(size,70)
-            button.setBaseSize(200, 70)
-            button.setMinimumSize(110,70)
-            button.move(100, 70)
-            button.setStyleSheet(styleButton)
-            linha += 1
-            button.setText("{}".format(nomee.upper()))
-            button.show()
-            button.clicked.connect(lambda ch, nomee=nomee: abrecomanda(nomee))
-            if numero < 4:
-                for x in range(numero, linha):
-                    button.move(distancia, 70)
-                    distancia = distancia + 170
-            elif numero == 4:
-                distanciab = 100
-                button.move(distanciab,150)
-            elif numero > 4:
-                for y in range(numero, linha):
-                    distanciab += 170
-                    button.move(distanciab,150)
-        elif nome == '[]':
-            QMessageBox.about(inicio,'ERRO','SEM MESAS DISPONIVEIS')
         
 
 
@@ -367,31 +388,50 @@ def abremesas():
 ### MESAS
 def abreaddmesas():
     addmesa.show()
+    addmesa.erro.setText('')
     addmesa.nome.setText('')
     addmesa.numero.setText('')
+    addmesa.setStyleSheet("""#MainWindow {
+        background-image: url(Backgrounds/lanchonete.jpg);
+        background-repeat: no-repeat;
+        background-position: center;
+    }""")
     addmesa.frame_4.setStyleSheet("border-image: url(Backgrounds/backlogo.jpg)")
 
 
 def addmesas():
     from conexao import con
     import mysql.connector
+    global numero_mesa
     global nome_nome
     nomee = addmesa.nome.text()
     cur = con.cursor()
+    numero_confirma = addmesa.numero.text().isdigit()
     try:
-        cur.execute("USE mesas")
-        com = ("INSERT INTO mesas(nome,numero) VALUES (%s,%s)")
-        dados = (nomee,addmesa.numero.text())
-        cur.execute(com,dados)
-        con.commit()
-        cur.execute("CREATE DATABASE IF NOT EXISTS {}".format(nomee))
-        con.commit()
-        cur.execute("USE {}".format(nomee))
-        cur.execute("CREATE TABLE IF NOT EXISTS produtos ( id INT NOT NULL AUTO_INCREMENT , produto VARCHAR(50) NOT NULL ,quantidade INT, preco DOUBLE NOT NULL, TOTAL INT , PRIMARY KEY (id)) ENGINE = InnoDB")
-        con.commit()
-        QMessageBox.about(addmesa,'confirmado','Mesa Adicionada Com Sucesso !!')
-        addmesa.close()
-        abremesas()
+        if addmesa.numero.text() != '' and numero_confirma == True and nomee != '':
+            cur.execute("USE mesas")
+            numero_mesa = addmesa.numero.text()
+            com = ("INSERT INTO mesas(nome,numero) VALUES (%s,%s)")
+            dados = (nomee,addmesa.numero.text())
+            cur.execute(com,dados)
+            con.commit()
+            cur.execute("CREATE DATABASE IF NOT EXISTS {}".format(nomee))
+            con.commit()
+            cur.execute("USE {}".format(nomee))
+            cur.execute("CREATE TABLE IF NOT EXISTS produtos ( id INT NOT NULL AUTO_INCREMENT , produto VARCHAR(50) NOT NULL ,quantidade INT, preco DOUBLE NOT NULL, TOTAL INT , PRIMARY KEY (id)) ENGINE = InnoDB")
+            con.commit()
+            QMessageBox.about(addmesa,'confirmado','Mesa Adicionada Com Sucesso !!')
+            addmesa.close()
+            abremesas()
+        elif nomee == '':
+            addmesa.erro.setText("NOME NÃO PODE ESTAR VAZIO !")
+        elif addmesa.numero.text() == '':
+            addmesa.erro.setText("NUMERO DA MESA NÃO PODE ESTAR VAZIO !!!")
+
+        elif numero_confirma == False:
+            addmesa.erro.setText("NUMERO DA MESA NÃO É NUMERO !")
+        else:
+            None
     except mysql.connector.Error as err:
         QMessageBox.about(addmesa,'ERRO','ERRO AO ADICIONAR A MESA {} !!!!'.format(err))
     
@@ -421,12 +461,62 @@ def delmesa():
         cur.execute("DELETE FROM `mesas` WHERE `mesas`.`id` = {}".format(vid[0][0]))
         con.commit()
         cur.execute("DROP DATABASE {}".format(nome.lower()))
+        con.commit()
         abremesas()
         comanda.close()
     else:
         abremesas()
 
-
+def abremesas():
+    global linha
+    global nome_nome
+    from conexao import con
+    cur = con.cursor()
+    cur.execute("USE mesas")
+    cur.execute("SELECT * FROM mesas")
+    dado = cur.fetchall() 
+    btnn = -1 
+    distancia = 100
+    size = 150
+    linha = 0
+    nome_n = -1
+    numero = -1
+    cur.execute("SELECT nome FROM mesas")
+    nome = cur.fetchall()
+    cur.execute("SELECT numero FROM mesas")
+    numero_banco = cur.fetchall()
+    for i in range(0, len(dado)):
+        nome_n += 1
+        numero += 1
+        if str(nome) != '[]':
+            inicio.frame_2.setStyleSheet('QFrame{background-color: rgb(185, 185, 185);}')
+            nomee = nome[nome_n][0]
+            numero_mesa = numero_banco[nome_n][0]
+            size -= 5
+            btnn += 1
+            button = QPushButton('Button {}'.format(nomee), inicio.frame_2)
+            button.setMaximumSize(size,70)
+            button.setBaseSize(200, 70)
+            button.setMinimumSize(110,70)
+            button.move(100, 70)
+            button.setStyleSheet(styleButton)
+            linha += 1
+            button.setText("{} - {}".format(nomee.upper(),str(numero_mesa)))
+            button.show()
+            button.clicked.connect(lambda ch, nomee=nomee: abrecomanda(nomee))
+            if numero < 4:
+                for x in range(numero, linha):
+                    button.move(distancia, 70)
+                    distancia = distancia + 170
+            elif numero == 4:
+                distanciab = 100
+                button.move(distanciab,150)
+            elif numero > 4:
+                for y in range(numero, linha):
+                    distanciab += 170
+                    button.move(distanciab,150)
+        elif str(nome) == '[]':
+            QMessageBox.about(inicio,'ERRO','SEM MESAS DISPONIVEIS')
 
     
 abretelalogin()
@@ -459,8 +549,10 @@ adestoque.adicionar.clicked.connect(addestoque)
 ###COMANDAS
 
 comanda.adicionar.clicked.connect(abreaddproduto)
-adproduto.adicionar.clicked.connect(addproduto)
-comanda.apagar.clicked.connect(delmesa)
+adproduto.adicionar.clicked.connect(addprodutoa)
+comanda.SAIR.clicked.connect(delmesa)
+comanda.apagar.clicked.connect(apagaproduto)
+adproduto.tableWidget.selectionModel().selectionChanged.connect(addproduto)
 
 #--------------------------------------------------------------------------
 ##INICIOS

@@ -156,18 +156,17 @@ background-color: rgba(85, 255, 255, 50);
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="apagar">
-         <property name="minimumSize">
+        <widget class="QPushButton" name="SAIR">
+         <property name="maximumSize">
           <size>
            <width>50</width>
            <height>50</height>
           </size>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>50</width>
-           <height>16777215</height>
-          </size>
+         <property name="font">
+          <font>
+           <pointsize>15</pointsize>
+          </font>
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
@@ -183,7 +182,7 @@ background-color: rgba(255, 0, 0, 50);
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../icones/apagar.png</normaloff>../icones/apagar.png</iconset>
+           <normaloff>../icones/X.png</normaloff>../icones/X.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -235,6 +234,44 @@ background-color: rgba(255, 0, 0, 50);
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item alignment="Qt::AlignRight">
+           <widget class="QPushButton" name="apagar">
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+border:2px solid rgb(197, 174, 60);
+}
+QPushButton:hover{
+border:3px solid red;
+background-color: rgba(255, 0, 0, 50);
+}</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../icones/apagar.png</normaloff>../icones/apagar.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QTableWidget" name="tableWidget">
             <property name="font">
@@ -342,7 +379,7 @@ background-color: rgba(255, 0, 0, 50);
               <widget class="QLabel" name="mesa">
                <property name="font">
                 <font>
-                 <pointsize>20</pointsize>
+                 <pointsize>30</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
@@ -379,7 +416,7 @@ background-color: rgba(255, 0, 0, 50);
               <widget class="QLabel" name="total">
                <property name="font">
                 <font>
-                 <pointsize>25</pointsize>
+                 <pointsize>30</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
