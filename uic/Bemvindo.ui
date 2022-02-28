@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1152</width>
+    <width>1170</width>
     <height>753</height>
    </rect>
   </property>
@@ -39,11 +39,13 @@
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">
-background-color: rgb(185, 185, 185);</string>
+       <string notr="true">QFrame{
+border:2px solid black;
+
+}</string>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
@@ -82,7 +84,13 @@ background-color: rgb(185, 185, 185);</string>
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(121, 121, 121);</string>
+       <string notr="true">QFrame{
+border:2px solid black;
+border-bottom:0px;
+border-left:10px;
+background-color: rgb(62, 62, 62);
+
+}</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -108,8 +116,18 @@ background-color: rgb(185, 185, 185);</string>
        </property>
        <item>
         <widget class="QFrame" name="frame_5">
+         <property name="styleSheet">
+          <string notr="true">QFrame{
+border:2px solid black;
+border-bottom:0px;
+border-top:0px;
+border-left:10px;
+background-color: rgb(62, 62, 62);
+
+}</string>
+         </property>
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
@@ -122,6 +140,11 @@ background-color: rgb(185, 185, 185);</string>
               <width>500</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QFrame{
+border:0px
+}</string>
             </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
@@ -163,7 +186,8 @@ background-color: rgb(185, 185, 185);</string>
                <property name="styleSheet">
                 <string notr="true">QLineEdit{
 border:2px solid rgb(248, 207, 2);
-border-radius:15px
+border-radius:15px;
+background-color: rgb(124, 124, 124)
 }
 QLineEdit:hover{
 border:4px solid rgb(248, 207, 2);
@@ -315,7 +339,11 @@ background-color: rgba(85, 255, 127,255);
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(62, 62, 62);</string>
+       <string notr="true">QFrame{
+background-color: rgb(62, 62, 62);
+border:2px solid black;
+
+}</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -333,8 +361,14 @@ background-color: rgba(85, 255, 127,255);
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">border:2px solid rgb(248, 207, 2);
-border-radius: 15px</string>
+          <string notr="true">QLabel{
+border:2px solid rgb(248, 207, 2);
+border-radius: 15px;
+background-image: url(:/newPrefix/Backgrounds/lanchonete.jpg);
+background-position:center;
+background-repeat:no-repeat;
+}
+</string>
          </property>
          <property name="text">
           <string/>
@@ -367,20 +401,16 @@ border-radius: 15px</string>
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
-background-color: rgb(198, 198, 198);
-border: 2px solid rgb(248, 207, 2);
-border-radius:15px;
-color: rgb(0, 0, 0)
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(164, 255, 216, 255), stop:1 rgba(255, 255, 255, 255));
+border:2px solid rgb(85, 255, 255);
+border-radius:20px;
 }
-
 QPushButton:hover{
-border: 2px solid rgb(255, 255, 0);
-background-color: rgb(227, 227, 227)
+border:4px solid rgb(0, 255, 0)
 }
 
 QPushButton:pressed{
 background-color: rgb(255, 255, 255);
-border: 5px solid rgb(248, 207, 2);
 }</string>
          </property>
          <property name="text">
@@ -415,20 +445,16 @@ border: 5px solid rgb(248, 207, 2);
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
-background-color: rgb(198, 198, 198);
-border: 2px solid rgb(248, 207, 2);
-border-radius:15px;
-color: rgb(0, 0, 0)
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(164, 255, 216, 255), stop:1 rgba(255, 255, 255, 255));
+border:2px solid rgb(85, 255, 255);
+border-radius:20px;
 }
-
 QPushButton:hover{
-border: 2px solid rgb(255, 255, 0);
-background-color: rgb(227, 227, 227)
+border:4px solid rgb(0, 255, 0)
 }
 
 QPushButton:pressed{
 background-color: rgb(255, 255, 255);
-border: 5px solid rgb(248, 207, 2);
 }</string>
          </property>
          <property name="text">
@@ -453,20 +479,16 @@ border: 5px solid rgb(248, 207, 2);
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
-background-color: rgb(198, 198, 198);
-border: 2px solid rgb(248, 207, 2);
-border-radius:15px;
-color: rgb(0, 0, 0)
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(164, 255, 216, 255), stop:1 rgba(255, 255, 255, 255));
+border:2px solid rgb(85, 255, 255);
+border-radius:20px;
 }
-
 QPushButton:hover{
-border: 2px solid rgb(255, 255, 0);
-background-color: rgb(227, 227, 227)
+border:4px solid rgb(0, 255, 0)
 }
 
 QPushButton:pressed{
 background-color: rgb(255, 255, 255);
-border: 5px solid rgb(248, 207, 2);
 }</string>
          </property>
          <property name="text">
@@ -491,20 +513,16 @@ border: 5px solid rgb(248, 207, 2);
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton{
-background-color: rgb(198, 198, 198);
-border: 2px solid rgb(248, 207, 2);
-border-radius:15px;
-color: rgb(0, 0, 0)
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(164, 255, 216, 255), stop:1 rgba(255, 255, 255, 255));
+border:2px solid rgb(85, 255, 255);
+border-radius:20px;
 }
-
 QPushButton:hover{
-border: 2px solid rgb(255, 255, 0);
-background-color: rgb(227, 227, 227)
+border:4px solid rgb(0, 255, 0)
 }
 
 QPushButton:pressed{
 background-color: rgb(255, 255, 255);
-border: 5px solid rgb(248, 207, 2);
 }</string>
          </property>
          <property name="text">
@@ -513,50 +531,28 @@ border: 5px solid rgb(248, 207, 2);
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="usuarios">
-         <property name="minimumSize">
+        <widget class="QLabel" name="label_2">
+         <property name="maximumSize">
           <size>
-           <width>70</width>
+           <width>16777215</width>
            <height>70</height>
           </size>
          </property>
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <pointsize>15</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">QPushButton{
-background-color: rgb(198, 198, 198);
-border: 2px solid rgb(248, 207, 2);
-border-radius:15px;
-color: rgb(0, 0, 0)
-}
-
-QPushButton:hover{
-border: 2px solid rgb(255, 255, 0);
-background-color: rgb(227, 227, 227)
-}
-
-QPushButton:pressed{
-background-color: rgb(255, 255, 255);
-border: 5px solid rgb(248, 207, 2);
+          <string notr="true">QLabel{
+border:0px;
+color:rgb(0, 255, 255)
 }</string>
          </property>
          <property name="text">
-          <string>USUARIOS</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>../icones/usuario.png</normaloff>../icones/usuario.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>30</width>
-           <height>30</height>
-          </size>
+          <string>TextLabel</string>
          </property>
         </widget>
        </item>

@@ -1,10 +1,7 @@
-from asyncio.windows_events import NULL
-from http.client import OK
-from math import prod
-from telnetlib import ENCRYPT
-from turtle import color
+from datetime import date
+from datetime import datetime
 from PyQt5.QtGui import * 
-from msilib.schema import AdminExecuteSequence, Error
+from msilib.schema import Error
 from PyQt5 import uic,QtWidgets
 from time import sleep
 from PyQt5.QtGui import QPixmap
@@ -32,6 +29,8 @@ adestoque = uic.loadUi("uic/estoquead.ui" )
 
 #--------------------------------------------------------------------------
 #globais
+tempo = datetime.now()
+tempo_real = tempo.strftime("%d/%m/%Y \n%H:%M:%S")
 erro = 0
 saveuserr = True
 abremesa = 0
@@ -44,7 +43,12 @@ estilovermelho = """QLineEdit{border:2px solid rgb(255,0,0);border-radius:15px}
 estilonormal = """QLineEdit{color:rgb(141, 141, 141);border:2px solid rgb(255, 212, 0);border-radius:20px}
 QLineEdit:hover{border:3px solid rgb(220, 180, 0)}"""
 styletable = """QTableWidget{gridline-color: rgb(0, 0, 0);;font-size: 22pt;border:2px;border-image: url(Backgrounds/Back.jpg);}QHeaderView::section {background-color: rgb(62, 62, 62);padding: 4px;border:2px solid rgb(248, 207, 2);color:rgb(255, 255, 255);font: 75 12pt "MS Shell Dlg 2";}QHeaderView::section:horizontal{border-top: 2px solid rgb(248, 207, 2);font-size: 22pt;}QHeaderView::section:vertical{border-left: 2px solid rgb(248, 207, 2);	border-bottom:0px;font-size: 20pt}"""
-styleButton = """QPushButton{background-color: rgba(170, 255, 255, 100);font: 12pt Arial,bold;border:2px solid black;border-radius:15px}QPushButton:hover{background-color: rgba(170, 255, 255, 200);border:3px solid black}"""
+styleButton = """QPushButton{background-color: rgba(170, 255, 255, 200);font: 12pt Arial,bold;border:2px solid black;border-radius:15px}QPushButton:hover{background-color: rgba(170, 255, 255, 200);border:3px solid black}"""
+styleLogo = """QLabel{
+border:2px solid rgb(248, 207, 2);
+border-radius: 30px;
+background-image: url(Backgrounds/lanchonete.jpg);
+background-position:center;background-repeat:no-repeat;}"""
 linha = 0
 
 
@@ -67,6 +71,7 @@ def abretelalogin():
     global erro
     global saveuserr
     login.show()
+    registro.close()
     login.setStyleSheet("""#MainWindow {
         background-image: url(Backgrounds/lanchonete.jpg);
         background-repeat: no-repeat;
@@ -75,6 +80,8 @@ def abretelalogin():
         background-image: url(Backgrounds/lanchonete.jpg);
         background-repeat: no-repeat;
         background-position: center;}""")
+    login.label.setStyleSheet(styleLogo)
+    registro.label.setStyleSheet(styleLogo)
     try:
         from conexao import conexao
         conexao()
@@ -195,7 +202,9 @@ def validalogin():
             if sample_string == password:
                 login.close()
                 inicio.show()
-                inicio.frame_2.setStyleSheet('QFrame{background-image: url(Backgrounds/Back.jpg);background-repeat:no-repeat;background-position: center;}')
+                inicio.label_2.setText(str(tempo_real))
+                inicio.label.setStyleSheet(styleLogo)
+                inicio.frame_2.setStyleSheet('QFrame{background-image: url(Backgrounds/lanchonete.jpg);background-repeat:no-repeat;background-position: center; border:2px solid black}')
             else:
                 login.label_3.setText("VERIFIQUE OS DADOS")
 #ALTERA VISIBILIDADE DA SENHA
@@ -223,7 +232,7 @@ def abrecomanda(nomee):
     comanda.tableWidget.setColumnWidth(2, 320)
     comanda.tableWidget.setColumnWidth(3, 300)
     comanda.adicionar.setIcon(QtGui.QIcon('icones/adicionar.png'))
-    comanda.adicionar.setStyleSheet("""QPushButton{border:2px solid rgb(197, 174, 60);}QPushButton:hover{border:3px solid rgba(85, 255,20, 255);background-color: rgba(85, 255, 0, 100);}""")
+    comanda.adicionar.setStyleSheet("""QPushButton{border:2px solid rgb(197, 174, 60); background-color: rgb(0, 255, 0);}QPushButton:hover{border:3px solid rgba(85, 255,20, 255);background-color: rgba(85, 255, 0, 100);}""")
     cur = con.cursor()
     cur.execute("USE {}".format(nomee))
     cur.execute("SELECT * FROM produtos")
@@ -233,8 +242,7 @@ def abrecomanda(nomee):
     for i in range(0,len(resul)):
         for j in range(0, 4):
             comanda.tableWidget.setItem(i,j,QtWidgets.QTableWidgetItem(str(resul[i][j])))
-    comanda.mesa.setText(nomee)
-    comanda.mesa.setStyleSheet("QLabel{color: rgb(0, 4, 255) }")
+    comanda.mesa.setText(nomee.upper())
     comanda.frame.setStyleSheet('QFrame{border-image: url("Backgrounds/975.jpg")}')
     somacomandas()
 
@@ -489,7 +497,6 @@ def abremesas():
         nome_n += 1
         numero += 1
         if str(nome) != '[]':
-            inicio.frame_2.setStyleSheet('QFrame{background-color: rgb(185, 185, 185);}')
             nomee = nome[nome_n][0]
             numero_mesa = numero_banco[nome_n][0]
             size -= 5
@@ -536,6 +543,7 @@ registro.olhosenha.clicked.connect(olhosenha)
 registro.password.setEchoMode(registro.password.Password)
 registro.c_password.setEchoMode(registro.password.Password)
 registro.olhosenha.setIcon(QIcon(QPixmap('icones/fechado.png')))
+registro.voltar.clicked.connect(abretelalogin)
 #--------------------------------------------------------------------------
 ##ADDMESAS
 addmesa.adicionar.clicked.connect(addmesas)

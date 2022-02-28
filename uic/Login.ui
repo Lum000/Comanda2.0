@@ -116,10 +116,11 @@ color:rgb(255, 0, 0);
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(62, 62, 62);
+          <string notr="true">QFrame{
+background-color: rgba(62, 62, 62,0);
 border-radius:15px;
 
-border:2px solid rgb(255, 212, 0)</string>
+border:0px}</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -202,13 +203,14 @@ background-color: rgb(141, 141, 141);</string>
              </property>
              <property name="styleSheet">
               <string notr="true">QLineEdit{
-color:rgb(141, 141, 141);
+color:black;
 border:2px solid rgb(255, 212, 0);
 border-radius:20px
 }
 QLineEdit:hover{
 border:3px solid rgb(220, 180, 0)
-}</string>
+}
+</string>
              </property>
              <property name="maxLength">
               <number>30</number>
@@ -238,7 +240,7 @@ border:3px solid rgb(220, 180, 0)
              </property>
              <property name="styleSheet">
               <string notr="true">QLineEdit{
-color:rgb(141, 141, 141);
+color:black;
 border:2px solid rgb(255, 212, 0);
 border-radius:20px
 }
@@ -382,7 +384,7 @@ font: 63 12pt &quot;Segoe UI Variable Small Semibol&quot;;
 border:2px solid rgb(255, 212, 0);
 border-radius:25px;
 font: 63 12pt &quot;Yu Gothic UI Semibold&quot;;
-	background-color: rgb(141, 141, 141)
+	background-color: rgba(141, 141, 141,100)
 }
 QPushButton:hover{
 border:4px solid rgb(255, 220, 0);
@@ -408,7 +410,7 @@ font: 63 15pt &quot;Yu Gothic UI Semibold&quot;;
 border:2px solid rgb(255, 212, 0);
 border-radius:25px;
 font: 63 12pt &quot;Yu Gothic UI Semibold&quot;;
-	background-color: rgb(141, 141, 141)
+	background-color: rgba(141, 141, 141,100)
 }
 QPushButton:hover{
 border:4px solid rgb(255, 220, 0);
